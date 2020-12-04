@@ -400,7 +400,11 @@ class HRSIRequest(object):
         logging.info(dl_filename + " " + product_url.split("?token")[0])
         hrsi_filepath = os.path.join(self.outputPath, dl_filename)
         logging.debug('DL filepath: ' + hrsi_filepath)
-        subprocess.check_call('curl %s -o %s -s'%(product_url, hrsi_filepath), shell=True, stderr=subprocess.STDOUT)
+        try:
+            subprocess.check_call('curl %s -o %s -s'%(product_url, hrsi_filepath), shell=True)
+        except subprocess.CalledProcessError as e:
+            logging.error(str(e))
+            sys.exit(-2)
         logging.debug('DL command: ' + 'curl %s -o %s -s'%(product_url, hrsi_filepath))
         return hrsi_filepath
 
